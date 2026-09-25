@@ -1,67 +1,81 @@
-# AGENTE 10 — PREPARAÇÃO E EXPORTAÇÃO DO VÍDEO
 
-import os
-
-
-class AgenteVideo:
+       class AgenteVideo:
     def __init__(self):
-        self.nome = "Agente 10 - Vídeo"
+        self.nome = "Agente 10 - Gerenciador de Vídeo"
+
+        # Ordem de tentativa dos geradores
+        self.geradores = [
+            {
+                "nome": "Wan 2.2",
+                "tipo": "gratuito",
+                "ativo": True
+            },
+            {
+                "nome": "Gerador Reserva 1",
+                "tipo": "gratuito",
+                "ativo": False
+            },
+            {
+                "nome": "Gerador Reserva 2",
+                "tipo": "gratuito",
+                "ativo": False
+            },
+            {
+                "nome": "Google Flow",
+                "tipo": "ultimo_recurso",
+                "ativo": False
+            }
+        ]
+
+        # Nunca permitir gasto automático
+        self.permitir_gastos = False
 
     def preparar(self, episodio, aprovacao_sincronizacao):
         if not aprovacao_sincronizacao:
             return {
                 "aprovado": False,
-                "erro": "O Agente 09 não aprovou o conteúdo."
+                "status": "BLOQUEADO",
+                "motivo": "Sincronização não aprovada."
             }
 
-        numero = episodio.get("episodio", 1)
-
-        nome_arquivo = f"episodio_{numero:03}.mp4"
-        caminho = os.path.join("output", nome_arquivo)
-
-        configuracao = {
-            "resolucao": "1080x1920",
-            "proporcao": "9:16",
-            "formato": "mp4",
-            "idioma": "pt-BR",
-            "legendas": True,
-            "sincronizacao_labial": True,
-            "qualidade": "alta",
-            "fps": 30
-        }
+        numero = episodio.get("numero", 1)
 
         return {
-            "agente": self.nome,
             "aprovado": True,
+            "status": "PRONTO_PARA_GERAR",
             "episodio": numero,
-            "arquivo_final": caminho,
-            "configuracao": configuracao,
+            "arquivo_final": f"output/episodio_{numero:03d}.mp4",
 
-            "instrucoes": [
-                "Gerar todas as cenas na ordem correta.",
-                "Usar somente o roteiro aprovado.",
-                "Manter os personagens consistentes.",
-                "Usar as falas aprovadas.",
-                "Sincronizar boca e voz.",
-                "Adicionar legendas em português.",
-                "Manter formato vertical 9:16.",
-                "Exportar somente depois das verificações."
-            ],
+            "configuracao": {
+                "formato": "mp4",
+                "proporcao": "9:16",
+                "resolucao": "1080x1920",
+                "fps": 30,
+                "idioma": "pt-BR",
+                "duracao_minima_segundos": 60,
+                "legendas": True,
+                "sincronizacao_labial": True
+            },
 
-            "status": "PRONTO PARA GERADOR DE VÍDEO"
+            "estrategia": {
+                "usar_varios_clipes": True,
+                "juntar_clipes": True,
+                "manter_personagens": True,
+                "manter_vozes": True,
+                "manter_continuidade": True
+            },
+
+            "geradores": self.geradores,
+
+            "seguranca": {
+                "permitir_gastos": self.permitir_gastos,
+                "se_todos_falharem": "SALVAR_COMO_PENDENTE"
+            }
         }
 
+    def escolher_proximo_gerador(self):
+        for gerador in self.geradores:
+            if gerador["ativo"]:
+                return gerador
 
-if __name__ == "__main__":
-    agente = AgenteVideo()
-
-    episodio = {
-        "episodio": 1
-    }
-
-    resultado = agente.preparar(
-        episodio,
-        aprovacao_sincronizacao=True
-    )
-
-    print(resultado)
+        return None
