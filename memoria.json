@@ -1,0 +1,33 @@
+{
+  "novela": {
+    "nome": "Novelinha das Frutas",
+    "status": "EM_ANDAMENTO",
+    "episodio_atual": 1,
+    "novela_finalizada": false,
+    "resumo_anterior": null
+  },
+  "personagens": [
+    "Morango",
+    "Abacaxi",
+    "Limão",
+    "Coco"
+  ],
+  "regras": {
+    "iniciar_nova_novela_antes_de_terminar": false,
+    "idioma": "pt-BR",
+    "formato": "9:16",
+    "manter_personagens": true,
+    "manter_continuidade": true
+  },
+  "publicacao": {
+    "timezone": "America/Sao_Paulo",
+    "horarios": [
+      "08:00",
+      "10:00",
+      "13:00",
+      "15:00",
+      "20:00",
+      "21:00"
+    ]
+  }
+}
