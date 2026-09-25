@@ -1,0 +1,26 @@
+name: Testar 14 Agentes
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Testar main
+        run: python main.py
+
+      - name: Testar orquestrador
+        run: python orquestrador.py
