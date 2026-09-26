@@ -4,12 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - principal
 
 jobs:
   testar:
     runs-on: ubuntu-latest
-
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
     steps:
       - name: Baixar projeto
         uses: actions/checkout@v4
