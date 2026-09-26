@@ -1,9 +1,7 @@
-
-       class AgenteVideo:
+class AgenteVideo:
     def __init__(self):
         self.nome = "Agente 10 - Gerenciador de Vídeo"
 
-        # Ordem de tentativa dos geradores
         self.geradores = [
             {
                 "nome": "Wan 2.2",
@@ -27,7 +25,6 @@
             }
         ]
 
-        # Nunca permitir gasto automático
         self.permitir_gastos = False
 
     def preparar(self, episodio, aprovacao_sincronizacao):
@@ -45,7 +42,6 @@
             "status": "PRONTO_PARA_GERAR",
             "episodio": numero,
             "arquivo_final": f"output/episodio_{numero:03d}.mp4",
-
             "configuracao": {
                 "formato": "mp4",
                 "proporcao": "9:16",
@@ -56,19 +52,9 @@
                 "legendas": True,
                 "sincronizacao_labial": True
             },
-
-            "estrategia": {
-                "usar_varios_clipes": True,
-                "juntar_clipes": True,
-                "manter_personagens": True,
-                "manter_vozes": True,
-                "manter_continuidade": True
-            },
-
             "geradores": self.geradores,
-
             "seguranca": {
-                "permitir_gastos": self.permitir_gastos,
+                "permitir_gastos": False,
                 "se_todos_falharem": "SALVAR_COMO_PENDENTE"
             }
         }
