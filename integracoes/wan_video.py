@@ -1,4 +1,7 @@
 import os
+import urllib.request
+import urllib.error
+import json
 
 
 class WanVideo:
@@ -11,34 +14,56 @@ class WanVideo:
         return bool(os.getenv("HF_TOKEN"))
 
     def testar_conexao(self):
-        if not self.disponivel():
+        token = os.getenv("HF_TOKEN")
+
+        if not token:
             return {
                 "sucesso": False,
                 "status": "SEM_TOKEN"
             }
 
-        return {
-            "sucesso": True,
-            "status": "HF_TOKEN_OK",
-            "gerador": self.nome,
-            "modelo": self.modelo,
-            "gastos_permitidos": False
-        }
+        # Consulta somente os dados da conta.
+        # Não solicita inferência e não gera vídeo.
+        requisicao = urllib.request.Request(
+            "https://huggingface.co/api/whoami-v2",
+            headers={
+                "Authorization": f"Bearer {token}"
+            }
+        )
 
-    def gerar(self, prompt, arquivo_saida):
-        # Segurança: ainda não chama nenhum serviço que possa cobrar.
-        if not self.disponivel():
+        try:
+            with urllib.request.urlopen(requisicao, timeout=20) as resposta:
+                dados = json.loads(resposta.read().decode("utf-8"))
+
             return {
-                "sucesso": False,
-                "status": "SEM_TOKEN",
-                "gerador": self.nome
+                "sucesso": True,
+                "status": "HUGGINGFACE_CONECTADO",
+                "gerador": self.nome,
+                "modelo": self.modelo,
+                "usuario_hf": dados.get("name", "desconhecido"),
+                "gastos_permitidos": False
             }
 
+        except urllib.error.HTTPError as erro:
+            return {
+                "sucesso": False,
+                "status": "TOKEN_INVALIDO_OU_SEM_PERMISSAO",
+                "codigo_http": erro.code
+            }
+
+        except Exception as erro:
+            return {
+                "sucesso": False,
+                "status": "ERRO_DE_CONEXAO",
+                "erro": str(erro)
+            }
+
+    def gerar(self, prompt, arquivo_saida):
         return {
             "sucesso": False,
-            "status": "GERACAO_BLOQUEADA_ATE_CONFIRMAR_PROVEDOR_GRATUITO",
+            "status": "GERACAO_AINDA_BLOQUEADA",
             "gerador": self.nome,
-            "prompt": prompt,
             "arquivo_saida": arquivo_saida,
             "gastos_permitidos": False
         }
+           
