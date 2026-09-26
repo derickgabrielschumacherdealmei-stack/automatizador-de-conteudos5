@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Verificar HF_TOKEN
+        shell: bash
         run: |
           if [ -z "$HF_TOKEN" ]; then
             echo "ERRO: HF_TOKEN nao encontrado"
