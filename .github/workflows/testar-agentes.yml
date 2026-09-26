@@ -36,3 +36,5 @@ jobs:
 
       - name: Testar orquestrador
         run: python orquestrador.py
+      - name: Testar conexao Wan
+        run: python -m integracoes.teste_wan
