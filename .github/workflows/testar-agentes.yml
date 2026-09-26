@@ -9,18 +9,21 @@ on:
 jobs:
   testar:
     runs-on: ubuntu-latest
+
     env:
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
     steps:
-         - name: Verificar HF_TOKEN
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Verificar HF_TOKEN
         run: |
           if [ -z "$HF_TOKEN" ]; then
             echo "ERRO: HF_TOKEN nao encontrado"
             exit 1
           fi
-          echo "HF_TOKEN configurado com sucesso"  
-      - name: Baixar projeto
-        uses: actions/checkout@v4
+          echo "HF_TOKEN configurado com sucesso"
 
       - name: Configurar Python
         uses: actions/setup-python@v5
